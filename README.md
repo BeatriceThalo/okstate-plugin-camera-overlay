@@ -23,7 +23,17 @@ You are likely here if you are using currently using `cordova-plugin-camera` in 
 
 Some good news is that HTML5 now allows a camera feed to be captured within the html page (webview activity) itself via `window.navigator.mediaDevices.getUserMedia()` (full walkthrough here https://www.html5rocks.com/en/tutorials/getusermedia/intro/) without using a native camera activity at all. Bad news is that while the iOS Safari app has the required `.mediaDevices`, an iOS UIWebView or WKWebView does not have that property, due to their security policies. So the fastest way to add an overlay is to launch a native activity that has the camera feed element and an extra imageview element in it, using either Java or Objective-C. And since you love JavaScript best, this has the native code you need.
 
-At the moment for Android, you can use HTML5 to add an overlay and any other customizations you like (or modify the Java in your own fork). Therefore this plugin's purpose is to add an overlay to the iOS take picture. Because it modifies `cordova-plugin-camera`, it includes `cordova-plugin-camera`, taken at version 1.1.0 or so, so refer to cordova's documentation for full specs, aka the readme in wkevina's fork of this project.
+* For Web, you can use HTML5 to add an overlay and any other customizations you like.
+* At the moment for Android, you can use the web method plus the following permission edits or modify the Java in your own fork.
+  -  Add a user control for camera permissions, config.xml:
+        <widget xmlns:android="http://schemas.android.com/apk/res/android">
+            <platform name="android">
+                <config-file parent="/manifest" target="AndroidManifest.xml">
+                    <uses-permission android:name="android.permission.CAMERA" />
+                </config-file>
+            </platform>
+  -  Trigger the request for permission using `cordova-plugin-android-permissions` after the mediaDevices check, per Android 6.0+ conventions.
+* For iOS, use this plugin to add an image overlay to take picture. Because it modifies `cordova-plugin-camera`, it includes `cordova-plugin-camera`, taken at version 1.1.0 or so, so refer to cordova's documentation for full specs, aka the readme in wkevina's fork of this project.
 
 ## Installation
 
@@ -31,8 +41,9 @@ At the moment for Android, you can use HTML5 to add an overlay and any other cus
 
 ### Description
 
-Because the overlay also covers the camera feed's shutterButton and cancelButton, they are rebuilt above the overlay. There is also a slider above the overlay to control the overlay's transparency from 0 to 1. There is rudimentary 'sizeToFit' scaling to resize the provided overlay image to cover the whole feed element.
+Because the overlay also covers (think z-index) the camera feed's shutterButton and cancelButton, they are rebuilt above the overlay. There is also a slider above the overlay to control the overlay's transparency from 0 to 1. There is rudimentary 'sizeToFit' scaling to resize the provided overlay image to cover the dimensions of the whole feed element.
 TODO specify synchronous img paths, either data: or file: in local iOS directory and how to get it stored there.
+TODO is iOS permission included by default?
 
 ### Supported Platforms
 
